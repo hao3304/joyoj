@@ -1,0 +1,5 @@
+rootProject.name = 'joyoj'
+include 'server'
+include 'web'
+include 'admin'
+
