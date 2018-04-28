@@ -3,6 +3,7 @@ package com.sjtu.server.config;
 import com.sjtu.server.security.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import com.sjtu.server.security.UserDetailService;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -11,18 +12,14 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
-    private static final String KEY = "joyoj";
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private UserDetailService userDetailsService;
 
     @Bean
     public JwtTokenFilter authenticationTokenFilterBean() throws Exception {
@@ -46,26 +43,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .authorizeRequests()
                 .antMatchers(
                         HttpMethod.GET,
                         "/",
                         "/*.html",
                         "/favicon.ico",
-                        "/assets/**",
-                        "/v2/api-docs",
-                        "/webjars/**",
-                        "/swagger-resources"
+                        "/assets/**"
                 ).permitAll()
-                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/admin/login","/login").permitAll()
+                .antMatchers("/admin/*").hasRole("ADMIN")
                 .anyRequest().authenticated();
-        http.headers().cacheControl().disable();
+
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
 
-
     }
-
-
 }

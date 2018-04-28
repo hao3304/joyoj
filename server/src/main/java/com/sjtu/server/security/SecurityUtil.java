@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public class SecurityUtil {
 
-    public static final String SECRET = "yizit-mes";
+    public static final String SECRET = "hao3304";
 
     public static SecurityUser getUser(){
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
