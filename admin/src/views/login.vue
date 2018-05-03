@@ -12,8 +12,8 @@
                 </p>
                 <div class="form-con">
                     <Form ref="loginForm" :model="form" :rules="rules">
-                        <FormItem prop="userName">
-                            <Input v-model="form.userName" placeholder="请输入用户名">
+                        <FormItem prop="username">
+                            <Input v-model="form.username" disabled placeholder="请输入用户名">
                                 <span slot="prepend">
                                     <Icon :size="16" type="person"></Icon>
                                 </span>
@@ -38,15 +38,16 @@
 
 <script>
 import Cookies from 'js-cookie';
+import { Login } from '@/services/login'
 export default {
     data () {
         return {
             form: {
-                userName: '',
+                username: 'admin',
                 password: ''
             },
             rules: {
-                userName: [
+                username: [
                     { required: true, message: '账号不能为空', trigger: 'blur' }
                 ],
                 password: [
@@ -59,10 +60,17 @@ export default {
         handleSubmit () {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
-                    Cookies.set('user', this.form.userName);
-                    this.$router.push({
-                        name: 'home_index'
-                    });
+                    Login(this.form).then(rep=>{
+                        if(rep.status == 0) {
+                            Cookies.set('adminToken', rep.result);
+                            this.$store.commit('setToken', rep.result);
+                            this.$router.push({
+                                name: 'home_index'
+                            });
+                        }else{
+                            this.$Message.error(rep.message);
+                        }
+                    })
                 }
             });
         }

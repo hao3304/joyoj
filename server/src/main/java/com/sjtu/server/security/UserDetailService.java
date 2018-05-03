@@ -22,20 +22,24 @@ public class UserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByUserName(username);
-        if(user == null) {
-            throw  new UsernameNotFoundException("no user");
+        if(username.equals("admin")) {
+            List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+            simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
+            SecurityUser securityUser = new SecurityUser(username, "",  true, true, true,true, simpleGrantedAuthorities);
+            return securityUser;
+        }else {
+            User user = userService.findByUserName(username);
+            if(user == null) {
+                throw  new UsernameNotFoundException("no user");
+            }
+            SecurityUser securityUser = new SecurityUser(user.getUsername(), user.getPassword(),  true, true, true,true, getAuthorities(user));
+            return securityUser;
         }
-        SecurityUser securityUser = new SecurityUser(user.getUsername(), user.getPassword(),  true, true, true,true, getAuthorities(user));
-        return securityUser;
+
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities(User user) {
         List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
-        if(user.isRoot() && user.getPassword() == "hao3304") {
-            simpleGrantedAuthorities.add(new SimpleGrantedAuthority("ROLE_ADMIN"));
-        }else{
-        }
         return simpleGrantedAuthorities;
     }
 }

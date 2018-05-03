@@ -26,12 +26,12 @@ public class SecurityUtil {
 
     private static Date generateExpirationDate() {
         Date now = new Date();
-        Long d = now.getTime() + 604800;
+        Long d = now.getTime() + 604800000;
         return new Date(d);
     }
 
-    public static boolean isRoot() {
-        return "root".equals(getUser().getUsername());
+    public static boolean isAdmin() {
+        return "admin".equals(getUser().getUsername());
     }
 
     public static String generateToken(Map<String, Object> claims) {

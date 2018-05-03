@@ -39,7 +39,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -51,8 +50,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "/favicon.ico",
                         "/assets/**"
                 ).permitAll()
-                .antMatchers(HttpMethod.POST, "/admin/login","/login").permitAll()
-                .antMatchers("/admin/*").hasRole("ADMIN")
+                .antMatchers("/api/login","/api/register","/api/check/*").permitAll()
+                .antMatchers("/api/admin/*").hasRole("ADMIN")
                 .anyRequest().authenticated();
 
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);

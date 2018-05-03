@@ -8,7 +8,7 @@
                 :shrink="shrink"
                 :menu-list="menuList">
                 <div slot="top" class="logo-con">
-                    <img v-show="!shrink"  src="../images/logo.jpg" key="max-logo" />
+                    <h5 v-show="!shrink">管理后台</h5>
                     <img v-show="shrink" src="../images/logo-min.jpg" key="min-logo" />
                 </div>
             </shrinkable-menu>
@@ -48,6 +48,7 @@
 <script>
 import Cookies from 'js-cookie';
 import shrinkableMenu from './main-components/shrinkable-menu/shrinkable-menu.vue';
+import { GetMine } from '@/services/login'
 
 export default {
     components: {
@@ -66,7 +67,15 @@ export default {
     },
     methods: {
         init () {
-            this.userName = Cookies.get('user');
+            GetMine().then(rep=>{
+                if(rep.status == 0) {
+                    this.userName = rep.result;
+                }else{
+                    this.$router.push({
+                        name: 'login'
+                    });
+                }
+            })
         },
         toggleClick () {
             this.shrink = !this.shrink;
@@ -82,3 +91,20 @@ export default {
     }
 };
 </script>
+<style lang="less">
+
+    @import "../styles/common.less";
+
+    .ivu-menu-dark.ivu-menu-vertical .ivu-menu-item-active:not(.ivu-menu-submenu), .ivu-menu-dark.ivu-menu-vertical .ivu-menu-submenu-title-active:not(.ivu-menu-submenu){
+        color: #fff !important;
+    }
+
+    .logo-con{
+        h5 {
+            color: #fff;
+            text-align: center;
+            font-size: 24px;
+            padding: 4px 0;
+        }
+    }
+</style>

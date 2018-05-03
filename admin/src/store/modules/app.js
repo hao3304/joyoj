@@ -6,11 +6,15 @@ const app = {
         routers: [
             otherRouter,
             ...appRouter
-        ]
+        ],
+        token: ''
     },
     mutations: {
         updateMenulist (state) {
             state.menuList = appRouter;
+        },
+        setToken (state, token) {
+            state.token = token;
         }
     }
 };
