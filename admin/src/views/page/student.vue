@@ -17,9 +17,9 @@
             <!--</div>-->
         </div>
         <div class="y-table">
-            <Table  :loading="loading" :columns="columns" :data="data" ></Table>
+            <Table  :loading="loading" :height="600" :columns="columns" :data="data" ></Table>
             <div class="page-block">
-                <Page :total="total" :page-size="query.size" @on-page-size-change="onPageSizeChange" @on-change="onPageChange" show-elevator show-total show-sizer></Page>
+                <Page :total="total" size="small" :page-size="query.size" @on-page-size-change="onPageSizeChange" @on-change="onPageChange" show-elevator show-total show-sizer></Page>
             </div>
         </div>
     </div>
@@ -64,11 +64,17 @@
                     },
                     {
                         title: '性别',
-                        key: 'sex'
+                        key: 'sex',
+                        render: (h, {row}) =>{
+                            return h('div',{}, row.sex == 1? '男':'女')
+                        }
                     },
                     {
                         title: '注册时间',
-                        key: 'createTime'
+                        key: 'createTime',
+                        render: (h, {row}) =>{
+                            return h('div',{}, new Date(row.createTime).format('yyyy-MM-dd hh:mm'))
+                        }
                     }
                 ],
                 data:[],
@@ -78,24 +84,13 @@
                     username:''
                 },
                 total:0,
-                userModal:false,
-                userForm:UserModel(),
-                rules: {},
-                formLoading:false,
-                loading:true,
-                empColumns:[
-                    {
-                        title: '员工编号',
-                        key: 'no'
-                    }, {
-                        title: '员工姓名',
-                        key: 'name'
-                    }
-                ]
+                rules: {}
+
             }
         },
         methods:{
             render() {
+                this.loading = true;
                 studentService.findAll({page:1,size:10}).then(rep=>{
                     if(rep.status == 0) {
                         this.total = rep.result.total;

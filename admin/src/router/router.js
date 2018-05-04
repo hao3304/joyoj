@@ -66,7 +66,17 @@ export const appRouter = [
         name: 'class',
         component: Main,
         children: [
-            { path: 'index', title: '班级管理', name: 'class_index', component: resolve => { require(['@/views/page/page.vue'], resolve); } }
+            { path: 'index', title: '班级管理', name: 'class_index', component: resolve => { require(['@/views/page/class.vue'], resolve); } }
+        ]
+    },
+    {
+        path: '/lesson',
+        icon: 'ios-paper',
+        title: '课程管理',
+        name: 'lesson',
+        component: Main,
+        children: [
+            { path: 'index', title: '课程管理', name: 'lesson_index', component: resolve => { require(['@/views/page/lesson.vue'], resolve); } }
         ]
     }
 ];
